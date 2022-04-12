@@ -3,7 +3,7 @@
 Game* Game::instance;
 
 Game::Game(){
-
+  state = new State();
 }
 
 Game& Game::getInstance(){
@@ -22,5 +22,9 @@ Game::~Game(){
 }
 
 void Game::run(){
-  cout << "hello world" << endl;
+  state->start();
+  while (!state->isGameFinished()) {
+    state->render();
+    cout << "teste" << endl;
+  }
 }
