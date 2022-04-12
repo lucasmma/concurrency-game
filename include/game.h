@@ -2,6 +2,9 @@
 #define GAME_H
 #include <iostream>
 #include <algorithm>
+#include <string>
+#include <vector>
+#include <ctype.h>
 #include "board.h"
 #include "state.h"
 using namespace std;
@@ -16,6 +19,7 @@ private:
     Game();
     static Game* instance;
     State* state;
+    vector<int> handleInput();
 
 };
 
