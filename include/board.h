@@ -10,10 +10,10 @@ class Board{
     Board();
     ~Board();
     void printMap();
+    static int width;
+    static int height;
   	
   private:
-    int width = 8;
-    int height = 8;
     int board[8][8];
 };
 

@@ -1,5 +1,8 @@
 #include "board.h"
 
+int Board::width = 8;
+int Board::height = 8;
+
 Board::Board(){
   for (int i = 0; i < width; i++){
     for (int j = 0; j < height; j++){

@@ -4,6 +4,7 @@ Game* Game::instance;
 
 Game::Game(){
   state = new State();
+  primaryPlayer = true;
 }
 
 Game& Game::getInstance(){
@@ -33,7 +34,6 @@ void Game::run(){
 }
 
 vector<int> Game::handleInput(){
-
   cout << endl << "Insira dois numeros de 0 a 7" << endl;
   string input;
   cin >> input;
@@ -49,6 +49,10 @@ vector<int> Game::handleInput(){
   } else{
     axisInput[0] = (int)(input[0] - '0');
     axisInput[1] = (int)(input[1] - '0');
+    if (axisInput[0] >= Board::width || axisInput[1] >= Board::height){
+      cout << "Deve ser digitado apenas números de 0 a 7" << endl;
+      return handleInput();
+    }
   }
   
   return axisInput;

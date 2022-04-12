@@ -20,6 +20,7 @@ private:
     static Game* instance;
     State* state;
     vector<int> handleInput();
+    bool primaryPlayer;
 
 };
 
