@@ -1,7 +1,7 @@
-#include <iostream>
-using namespace std;
+#include "../include/game.h"
 
 int main(int argc, char const **argv) {
-    cout << "Hello world" << endl;
-    return 0;
+  Game game = Game::getInstance();
+  game.run();
+  return 0;
 }
