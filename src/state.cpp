@@ -2,6 +2,7 @@
 
 State::State(){
     isFinished = false;
+    board = new Board();
 }
 
 State::~State(){
@@ -9,15 +10,16 @@ State::~State(){
 }
 
 void State::start(){
-    cout << "O jogo de inuncação começou" << endl;
+    cout << "O jogo de inuncação começou" << endl << endl;
 }
 
 void State::update(){
 
 }
 
-void State::render(){
-
+void State::render() {
+    board->printMap();
+    return;
 }
 
 bool State::isGameFinished(){

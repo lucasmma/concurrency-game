@@ -15,6 +15,7 @@ class State{
     bool isGameFinished();
   	
   private:
+    Board *board;
     bool isFinished;
 };
 

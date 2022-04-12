@@ -25,6 +25,6 @@ void Game::run(){
   state->start();
   while (!state->isGameFinished()) {
     state->render();
-    cout << "teste" << endl;
+    return;
   }
 }

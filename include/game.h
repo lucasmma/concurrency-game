@@ -1,6 +1,8 @@
 #ifndef GAME_H
 #define GAME_H
 #include <iostream>
+#include <algorithm>
+#include "board.h"
 #include "state.h"
 using namespace std;
 
