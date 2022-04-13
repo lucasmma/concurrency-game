@@ -5,9 +5,10 @@
 #include <string>
 #include <vector>
 #include <ctype.h>
+#include <queue>
+#include <utility>
 #include "board.h"
 #include "state.h"
-using namespace std;
 
 class Game{
 public:
@@ -19,7 +20,7 @@ private:
     Game();
     static Game* instance;
     State* state;
-    vector<int> handleInput();
+    std::vector<int> handleInput(bool invalidPlay = false);
     bool primaryPlayer;
 
 };

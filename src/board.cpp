@@ -12,21 +12,28 @@ Board::Board(){
   
 }
 
+bool Board::isSpotAvailable(std::vector<int> spot){
+  return board[spot[0]][spot[1]] == 0;
+}
+
+void Board::updateMap(std::vector<int> spot, int playerNumber){
+  board[spot[0]][spot[1]] = playerNumber;
+}
 
 void Board::printMap(){
-  cout << "   ";
+  std::cout << "   ";
   for (int i = 0; i < width; i++){
-    cout << " " << i;
+    std::cout << " " << i;
   }
   
-  cout << endl << endl;
+  std::cout << std::endl << std::endl;
 
   for (int i = 0; i < height; i++){
-    cout << i << "  "; 
+    std::cout << i << "  "; 
     for (int j = 0; j < width; j++){
-      cout << " " << board[i][j];
+      std::cout << " " << board[i][j];
     }
-    cout << endl;
+    std::cout << std::endl;
   }
 }
 

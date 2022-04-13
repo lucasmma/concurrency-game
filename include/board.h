@@ -10,6 +10,8 @@ class Board{
     Board();
     ~Board();
     void printMap();
+    bool isSpotAvailable(std::vector<int> spot);
+    void updateMap(std::vector<int> spot, int playerNumber);
     static int width;
     static int height;
   	

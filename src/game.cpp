@@ -1,4 +1,4 @@
-#include "../include/Game.h"
+#include "../include/game.h"
 
 Game* Game::instance;
 
@@ -26,34 +26,42 @@ void Game::run(){
   state->start();
   state->render();
   while (!state->isGameFinished()) {
-    handleInput();
+    std::vector<int> inputHandled = handleInput();
+    while(!state->enqueuePlay(inputHandled, primaryPlayer ? 1 : 2)){
+      inputHandled = handleInput(true);
+    }
     state->update();
     state->render();
-    return;
+    primaryPlayer = !primaryPlayer;
+    // return;
   }
 }
 
-vector<int> Game::handleInput(){
-  cout << endl << "Insira dois numeros de 0 a 7" << endl;
-  string input;
-  cin >> input;
+std::vector<int> Game::handleInput(bool invalidPlay){
+  if(invalidPlay) {
+    std::cout << std::endl << "Espaço está indisponível, escolha outro espaço" << std::endl;
+  } else{
+    std::cout << std::endl << "Insira dois numeros de 0 a 7" << std::endl;
+  }
+  std::string input;
+  std::cin >> input;
 
-  vector<int> axisInput(2, 0);
+  std::vector<int> axisInput(2, 0);
 
   if (input.size() != 2){
-    cout << "Deve ser digitado 2 casas decimais, uma para o eixo x e a outra para o eixo y" << endl;
+    std::cout << "Deve ser digitado 2 casas decimais, uma para o eixo x e a outra para o eixo y" << std::endl;
     return handleInput();
   } else if (!isdigit(input[0]) || !isdigit(input[1])){
-    cout << "Deve ser digitado apenas números" << endl;
+    std::cout << "Deve ser digitado apenas números" << std::endl;
     return handleInput();
   } else{
     axisInput[0] = (int)(input[0] - '0');
     axisInput[1] = (int)(input[1] - '0');
     if (axisInput[0] >= Board::width || axisInput[1] >= Board::height){
-      cout << "Deve ser digitado apenas números de 0 a 7" << endl;
+      std::cout << "Deve ser digitado apenas números de 0 a 7" << std::endl;
       return handleInput();
     }
   }
-  
+
   return axisInput;
 }
