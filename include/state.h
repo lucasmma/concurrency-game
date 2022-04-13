@@ -19,6 +19,7 @@ class State{
     std::queue<std::pair<std::vector<int>, int>> plays;
     Board *board;
     bool isFinished;
+    int winner;
 };
 
 
