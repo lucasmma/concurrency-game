@@ -26,6 +26,7 @@ void Game::run(){
   state->start();
   state->render();
   while (!state->isGameFinished()) {
+    std::cout << std::endl <<"Vez do jogador "<< (primaryPlayer ? 1: 2) << std::endl;
     std::vector<int> inputHandled = handleInput();
     while(!state->enqueuePlay(inputHandled, primaryPlayer ? 1 : 2)){
       inputHandled = handleInput(true);
@@ -41,7 +42,7 @@ std::vector<int> Game::handleInput(bool invalidPlay){
   if(invalidPlay) {
     std::cout << std::endl << "Espaço está indisponível, escolha outro espaço" << std::endl;
   } else{
-    std::cout << std::endl << "Insira dois numeros de 0 a 7" << std::endl;
+    std::cout << "Insira dois numeros de 0 a 7" << std::endl;
   }
   std::string input;
   std::cin >> input;

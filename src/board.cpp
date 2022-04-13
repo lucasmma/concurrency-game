@@ -8,21 +8,25 @@ Board::Board(){
     for (int j = 0; j < height; j++){
       board[i][j] = 0;
       if(i != 7) {
-        board[i][j] = 1;
+        board[i][j] = 2;
       }
     }
   }
   
-  board[Board::width - 1][Board::height - 1] = 2;
+  board[Board::width - 1][Board::height - 1] = 1;
 }
 
 bool Board::isSpotAvailable(std::vector<int> spot, int playerNumber){
-  std::vector<int> playersNeighboars= checkNeighboarsPlayers(spot[0], spot[1]);
+  // std::cout << (board[spot[0]][spot[1]] == 0) << " is available";
+  if (board[spot[0]][spot[1]] == 0) {
+    std::vector<int> playersNeighboars= checkNeighboarsPlayers(spot[0], spot[1]);
   
-  for (long unsigned int i = 0; i < playersNeighboars.size(); i++){
-    if(playerNumber == playersNeighboars[i] && board[spot[0]][spot[1]] == 0){
-      return true;
-    } 
+    for (long unsigned int i = 0; i < playersNeighboars.size(); i++){
+      if(playerNumber == playersNeighboars[i]){
+        return true;
+      } 
+    }
+    return false;
   }
 
   return false;
@@ -49,6 +53,9 @@ int Board::countSpotsWithNumber(int playerNumber){
       }
     }
   }
+
+  // std::cout << "Spots player " << playerNumber << " -> " << spots << std::endl;
+  
   return spots;
 }
 
@@ -57,21 +64,27 @@ int Board::isFlooded(){
   int spotsToPlayer2 = 0;
   for (int i = 0; i < Board::width; i++){
     for (int j = 0; j < Board::height; j++){
-      std::vector<int> neighboars = checkNeighboarsPlayers(i, j);
-
-      for (long unsigned int i = 0; i < neighboars.size(); i++){
-        if(neighboars[i] == 1){
-          spotsToPlayer1++;
-        } else{
-          spotsToPlayer2++;
+      if(board[i][j] == 0){
+        std::vector<int> neighboars = checkNeighboarsPlayers(i, j);
+        for (long unsigned int i = 0; i < neighboars.size(); i++){
+          if(neighboars[i] != 0) {
+            if(neighboars[i] == 1){
+              spotsToPlayer1++;
+            } else{
+              spotsToPlayer2++;
+            }
+          }
         }
       }
     }
   }
+  
+  // std::cout << "Spots player 1" << " -> " << spotsToPlayer2 << std::endl;
+  // std::cout << "Spots player 2" << " -> " << spotsToPlayer2 << std::endl;
 
   if(spotsToPlayer1 == 0 || spotsToPlayer2 == 0){
     int spotsOfPlayer1 = countSpotsWithNumber(1);
-    int spotsOfPlayer2 = countSpotsWithNumber(1);
+    int spotsOfPlayer2 = countSpotsWithNumber(2);
     if(spotsOfPlayer1 > spotsOfPlayer2){
       return 1;
     } else if(spotsOfPlayer1 < spotsOfPlayer2){

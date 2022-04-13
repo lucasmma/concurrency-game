@@ -22,10 +22,15 @@ void State::update(){
     }
     
     winner = board->isFlooded();
+
+    if(winner != -1){
+        isFinished = true;
+    }
 }
 
 bool State::enqueuePlay(std::vector<int> inputParsed, int playerNumber){
     //so pode até duas jogadas enfileiradas
+    // std::cout<< "Jogador  "<< playerNumber<< std::endl;
     if(!board->isSpotAvailable(inputParsed, playerNumber) ||
     (!plays.empty() &&
     plays.back().first[0] == inputParsed[0] &&
@@ -38,10 +43,12 @@ bool State::enqueuePlay(std::vector<int> inputParsed, int playerNumber){
 }
 
 void State::render() {
-    if(winner == -1){
-        board->printMap();
-    } else{
-        std::cout << std::endl << "O jogo acabou" << std::endl;
+    std::cout << winner << std::endl;
+    board->printMap();
+    if(winner > 0){
+        std::cout << std::endl << "O jogo acabou, e o jogador " << winner << " ganhou." << std::endl;
+    } else if(winner == 0){
+        std::cout << std::endl << "O jogo acabou com um empate." << std::endl;
     }
     return;
 }
