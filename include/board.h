@@ -1,27 +1,27 @@
-#ifndef GAME_H
-    #include "game.h"
-#endif
+// #ifndef GAME_H
+//     #include "game.h"
+// #endif
 
-#ifndef BOARD_H
-#define BOARD_H
+// #ifndef BOARD_H
+// #define BOARD_H
 
-class Board{
-  public:
-    Board();
-    ~Board();
-    void printMap();
-    bool isSpotAvailable(std::vector<int> spot, int playerNumber);
-    void updateMap(std::vector<int> spot, int playerNumber);
-    int isFlooded();
-    std::vector<int> checkNeighboarsPlayers(int x, int y);
-    static int width;
-    static int height;
+// class Board{
+//   public:
+//     Board();
+//     ~Board();
+//     void printBoard();
+//     bool isSpotAvailableOnBoard(std::vector<int> spot, int playerNumber);
+//     void updateBoard(std::vector<int> spot, int playerNumber);
+//     int isBoardFlooded();
+//     std::vector<int> checkNeighboarsPlayersOnBoard(int x, int y);
+//     static int width;
+//     static int height;
   	
-  private:
-    int countSpotsWithNumber(int playerNumber);
-    int board[8][8];
-};
+//   private:
+//     int board[8][8];
+//     int countSpotsWithNumber(int playerNumber);
+// };
 
 
 
-#endif
+// #endif

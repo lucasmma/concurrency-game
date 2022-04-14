@@ -2,6 +2,11 @@
 
 int main(int argc, char const **argv) {
   bool exit = false;
+
+  if(argc < 2){
+    std::cout << "Digite um número de jogador ao executar o programa" << std::endl;
+    return 0;
+  }
   while(!exit){
     int number;
     std::cout << "0 - para jogar o jogo" << std::endl;

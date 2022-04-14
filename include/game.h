@@ -12,7 +12,7 @@
 #include <sys/stat.h>
 #include <cstdio>
 #include <cstring>
-#include "board.h"
+// #include "board.h"
 #include "state.h"
 
 class Game{

@@ -20,14 +20,27 @@ Game& Game::getInstance(){
 Game::~Game(){
 }
 
+
 void Game::run(int playerNumber, bool exit){
+  std::cout<< "começando o jogo" << std::endl;
   player = playerNumber;
   size_t idMemoryShared;
-  if ((idMemoryShared = shmget(IPC_PRIVATE, sizeof(State), 0666 | IPC_CREAT | IPC_EXCL)) == -1){
-    idMemoryShared = shmget(IPC_PRIVATE, sizeof(State), 0666 | IPC_CREAT);
-    state = (State*)shmat(idMemoryShared, NULL, 0);
+  key_t key = ftok("/mnt/c/Users/lukit/Desktop/unb/sisop/concurrency-game/key.txt", 3);
+  std::cout << key << std::endl;
+  if ((idMemoryShared = shmget(key, sizeof(State), 0666 | IPC_CREAT | IPC_EXCL)) == -1){
+    // memoria já está alocada
+    idMemoryShared = shmget(key, sizeof(State), 0666 | IPC_CREAT);
+    std::cout << idMemoryShared << std::endl;
+    char* blkAddr = (char* ) shmat(idMemoryShared, NULL, 0);
+    state = (State*) blkAddr;
+    std::cout << "entrou no if" << std::endl;
+    std::cout << &blkAddr << std::endl;
+    std::cout << state << std::endl;
   } else {
-    state = (State*) shmat(idMemoryShared, NULL, 0);
+    // memoria não alocada
+    std::cout << "entrou no else" << std::endl;
+    char* blkAddr = (char* ) shmat(idMemoryShared, NULL, 0);
+    state = new(blkAddr) State();
   }
   
   if(exit){
@@ -35,22 +48,22 @@ void Game::run(int playerNumber, bool exit){
     if(-1 == (shmdt(state))){   
         perror("shmdt");
     }
-    state->getInstance().resetState();
+    state->resetState();
     std::cout<< "dettach" << std::endl;
     return;
   }
 
-  state->getInstance().start();
+  state->start();
 
-  state->getInstance().render();
-  while (!state->getInstance().isGameFinished()) {
+  state->render();
+  while (!state->isGameFinished()) {
     std::cout << std::endl << "Vez do jogador "<< this->player << std::endl;
     std::vector<int> inputHandled = handleInput();
-    while(!state->getInstance().enqueuePlay(inputHandled, this->player)){
+    while(!state->enqueuePlay(inputHandled, this->player)){
       inputHandled = handleInput(true);
     }
-    state->getInstance().update();
-    state->getInstance().render();
+    state->update();
+    state->render();
   }
   
     shmdt(state);
@@ -76,7 +89,7 @@ std::vector<int> Game::handleInput(bool invalidPlay){
   } else{
     axisInput[0] = (int)(input[0] - '0');
     axisInput[1] = (int)(input[1] - '0');
-    if (axisInput[0] >= Board::width || axisInput[1] >= Board::height){
+    if (axisInput[0] >= State::boardWidth || axisInput[1] >= State::boardHeight){
       std::cout << "Deve ser digitado apenas números de 0 a 7" << std::endl;
       return handleInput();
     }
