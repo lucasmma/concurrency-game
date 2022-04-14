@@ -49,10 +49,10 @@ void State::update(){
 bool State::enqueuePlay(std::vector<int> inputParsed, int playerNumber){
     //so pode até duas jogadas enfileiradas
     // std::cout<< "Jogador  "<< playerNumber<< std::endl;
-    std::cout << "passou" << std::endl;
-    std::cout << !board->isSpotAvailable(inputParsed, playerNumber) << std::endl;
-    std::cout << !plays.empty() << std::endl;
-    std::cout << plays.size() << std::endl;
+    // std::cout << "passou" << std::endl;
+    // std::cout << !board->isSpotAvailable(inputParsed, playerNumber) << std::endl;
+    // std::cout << !plays.empty() << std::endl;
+    // std::cout << plays.size() << std::endl;
     if(!board->isSpotAvailable(inputParsed, playerNumber) ||
     (!plays.empty() &&
     plays.back().first[0] == inputParsed[0] &&
@@ -71,9 +71,9 @@ void State::resetState() {
 
 void State::render() {
     // std::cout << winner << std::endl;
-    std::cout<< "render" << std::endl;
+    // std::cout<< "render" << std::endl;
     board->printMap();
-    std::cout<< "mapa printado" << std::endl;
+    // std::cout<< "mapa printado" << std::endl;
     
     if(winner > 0){
         std::cout << std::endl << "O jogo acabou, e o jogador " << winner << " ganhou." << std::endl;
