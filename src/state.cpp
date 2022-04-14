@@ -17,6 +17,7 @@ State::State(){
         }
     }
     
+    counterPlays = 0;
     board[State::boardWidth - 1][State::boardHeight - 1] = 1;
 }
 
@@ -26,11 +27,11 @@ State::~State(){
 
 void State::start(){
     std::cout << "O jogo de inuncação começou" << std::endl << std::endl;
-    std::cout << "Jogo iniciado " << isStarted << std::endl << std::endl;
-    std::cout << "IsFinished " << isFinished << std::endl << std::endl;
-    std::cout << "winner " << winner << std::endl << std::endl;
-    std::cout << "Board " << board[0][0] << std::endl << std::endl;
-    std::cout << "passou " << std::endl << std::endl;
+    std::cout << "Jogo iniciado " << isStarted << std::endl;
+    std::cout << "IsFinished " << isFinished << std::endl;
+    std::cout << "winner " << winner << std::endl;
+    std::cout << "Board " << board[0][0] << std::endl;
+    std::cout << "passou " << std::endl;
     
     if(!isStarted){
         isFinished = false;
@@ -46,39 +47,17 @@ void State::start(){
         board[State::boardWidth - 1][State::boardHeight - 1] = 1;
         winner = -1;
         isStarted = true;
+        counterPlays = 0;
     }
 }
 
-void State::update(){
-    while (!plays.empty()){
-        std::pair<std::vector<int>, int> currentPlay = plays.front();
-        updateBoard(currentPlay.first, currentPlay.second);
-        plays.pop();
-    }
-    
+void State::update(std::vector<int> spot, int playerNumber){
+    updateBoard(spot, playerNumber);
+    counterPlays++;
     winner = isBoardFlooded();
 
     if(winner != -1){
         isFinished = true;
-    }
-}
-
-bool State::enqueuePlay(std::vector<int> inputParsed, int playerNumber){
-    //so pode até duas jogadas enfileiradas
-    // std::cout<< "Jogador  "<< playerNumber<< std::endl;
-    // std::cout << "passou" << std::endl;
-    // std::cout << !isSpotAvailableOnBoard(inputParsed, playerNumber) << std::endl;
-    // std::cout << !plays.empty() << std::endl;
-    // std::cout << plays.size() << std::endl;
-    if(!isSpotAvailableOnBoard(inputParsed, playerNumber) ||
-    (!plays.empty() &&
-    plays.back().first[0] == inputParsed[0] &&
-    plays.back().first[1] == inputParsed[1])) {
-        return false;
-    } else {
-        plays.push(std::make_pair(inputParsed, playerNumber));
-        std::cout << "jogada enfileirada" << std::endl;
-        return true;
     }
 }
 

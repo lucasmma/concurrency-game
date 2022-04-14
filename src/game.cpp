@@ -26,16 +26,12 @@ void Game::run(int playerNumber, bool exit){
   player = playerNumber;
   size_t idMemoryShared;
   key_t key = ftok("/mnt/c/Users/lukit/Desktop/unb/sisop/concurrency-game/key.txt", 3);
-  std::cout << key << std::endl;
   if ((idMemoryShared = shmget(key, sizeof(State), 0666 | IPC_CREAT | IPC_EXCL)) == -1){
     // memoria já está alocada
     idMemoryShared = shmget(key, sizeof(State), 0666 | IPC_CREAT);
-    std::cout << idMemoryShared << std::endl;
     char* blkAddr = (char* ) shmat(idMemoryShared, NULL, 0);
     state = (State*) blkAddr;
     std::cout << "entrou no if" << std::endl;
-    std::cout << &blkAddr << std::endl;
-    std::cout << state << std::endl;
   } else {
     // memoria não alocada
     std::cout << "entrou no else" << std::endl;
@@ -45,10 +41,10 @@ void Game::run(int playerNumber, bool exit){
   
   if(exit){
     std::cout<< "sair" << std::endl;
+    state->resetState();
     if(-1 == (shmdt(state))){   
         perror("shmdt");
     }
-    state->resetState();
     std::cout<< "dettach" << std::endl;
     return;
   }
@@ -59,10 +55,14 @@ void Game::run(int playerNumber, bool exit){
   while (!state->isGameFinished()) {
     std::cout << std::endl << "Vez do jogador "<< this->player << std::endl;
     std::vector<int> inputHandled = handleInput();
-    while(!state->enqueuePlay(inputHandled, this->player)){
+    while(!state->isSpotAvailableOnBoard(inputHandled, this->player)){
       inputHandled = handleInput(true);
     }
-    state->update();
+    
+    // if(counter % 2 == 0){
+    state->update(inputHandled, this->player);
+    // }
+
     state->render();
   }
   

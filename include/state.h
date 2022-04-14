@@ -10,9 +10,8 @@ class State{
     State();
     ~State();
     void start();
-    void update();
+    void update(std::vector<int> spot, int playerNumber);
     void resetState();
-    bool enqueuePlay(std::vector<int> inputParsed, int playerNumber);
     void render();
     bool isGameFinished();
     void printBoard();
@@ -26,7 +25,7 @@ class State{
   private:
     int board[8][8];
     int countSpotsWithNumber(int playerNumber);
-    std::queue<std::pair<std::vector<int>, int>> plays;
+    int counterPlays;
     bool isStarted;
     bool isFinished;
     int winner;
