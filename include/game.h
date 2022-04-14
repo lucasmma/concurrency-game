@@ -7,13 +7,18 @@
 #include <ctype.h>
 #include <queue>
 #include <utility>
+#include <unistd.h>
+#include <sys/shm.h>
+#include <sys/stat.h>
+#include <cstdio>
+#include <cstring>
 #include "board.h"
 #include "state.h"
 
 class Game{
 public:
     ~Game();
-    void run();
+    void run(int playerNumber, bool exit = false);
     static Game& getInstance();
     State& getState();
 private:
@@ -21,8 +26,7 @@ private:
     static Game* instance;
     State* state;
     std::vector<int> handleInput(bool invalidPlay = false);
-    bool primaryPlayer;
-
+    int player;
 };
 
 #endif

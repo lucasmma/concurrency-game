@@ -3,8 +3,6 @@
 Game* Game::instance;
 
 Game::Game(){
-  state = new State();
-  primaryPlayer = true;
 }
 
 Game& Game::getInstance(){
@@ -22,20 +20,40 @@ Game& Game::getInstance(){
 Game::~Game(){
 }
 
-void Game::run(){
-  state->start();
-  state->render();
-  while (!state->isGameFinished()) {
-    std::cout << std::endl <<"Vez do jogador "<< (primaryPlayer ? 1: 2) << std::endl;
+void Game::run(int playerNumber, bool exit){
+  player = playerNumber;
+  size_t idMemoryShared;
+  if ((idMemoryShared = shmget(IPC_PRIVATE, sizeof(State), 0666 | IPC_CREAT | IPC_EXCL)) == -1){
+    idMemoryShared = shmget(IPC_PRIVATE, sizeof(State), 0666 | IPC_CREAT);
+    state = (State*)shmat(idMemoryShared, NULL, 0);
+  } else {
+    state = (State*) shmat(idMemoryShared, NULL, 0);
+  }
+  
+  if(exit){
+    std::cout<< "sair" << std::endl;
+    if(-1 == (shmdt(state))){   
+        perror("shmdt");
+    }
+    state->getInstance().resetState();
+    std::cout<< "dettach" << std::endl;
+    return;
+  }
+
+  state->getInstance().start();
+
+  state->getInstance().render();
+  while (!state->getInstance().isGameFinished()) {
+    std::cout << std::endl << "Vez do jogador "<< this->player << std::endl;
     std::vector<int> inputHandled = handleInput();
-    while(!state->enqueuePlay(inputHandled, primaryPlayer ? 1 : 2)){
+    while(!state->getInstance().enqueuePlay(inputHandled, this->player)){
       inputHandled = handleInput(true);
     }
-    state->update();
-    state->render();
-    primaryPlayer = !primaryPlayer;
-    // return;
+    state->getInstance().update();
+    state->getInstance().render();
   }
+  
+    shmdt(state);
 }
 
 std::vector<int> Game::handleInput(bool invalidPlay){
