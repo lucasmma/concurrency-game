@@ -21,12 +21,14 @@ class State{
     std::vector<int> checkNeighboarsPlayersOnBoard(int x, int y);
     static int boardWidth;
     static int boardHeight;
+    bool isStarted;
+    sem_t cinSem;
+    sem_t sem;
+    int playsCounter;
   	
   private:
     int board[8][8];
     int countSpotsWithNumber(int playerNumber);
-    int counterPlays;
-    bool isStarted;
     bool isFinished;
     int winner;
 };

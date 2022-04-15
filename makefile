@@ -6,7 +6,7 @@ RUN = ./
 
 DEP_FLAGS = -MT $@ -MMD -MP -MF $(DEP_PATH)/$*.d
 
-DIRECTIVES = -std=c++11 -Wall -Wextra -c -I $(HEADER_PATH)
+DIRECTIVES = -std=c++11 -Wall -Wextra -c -I $(HEADER_PATH) 
 
 LIBS =
 
@@ -40,14 +40,14 @@ else
 UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S), Darwin)
-LIBS = 
+LIBS =
 endif
 endif
 
 all: $(EXEC)
 
 $(EXEC): $(OBJ_FILES)
-	$(CC) -o $@ $^ $(LIBS)
+	$(CC) -o $@ $^ -pthread -lrt$(LIBS)
 
 $(BIN_PATH)/%.o: $(SRC_PATH)/%.cpp
 

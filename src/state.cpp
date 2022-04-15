@@ -17,7 +17,8 @@ State::State(){
         }
     }
     
-    counterPlays = 0;
+    sem_init(&sem, 1, 1);
+    playsCounter = 0;
     board[State::boardWidth - 1][State::boardHeight - 1] = 1;
 }
 
@@ -30,8 +31,7 @@ void State::start(){
     std::cout << "Jogo iniciado " << isStarted << std::endl;
     std::cout << "IsFinished " << isFinished << std::endl;
     std::cout << "winner " << winner << std::endl;
-    std::cout << "Board " << board[0][0] << std::endl;
-    std::cout << "passou " << std::endl;
+    std::cout << "passou " << std::endl << std::endl;
     
     if(!isStarted){
         isFinished = false;
@@ -44,16 +44,18 @@ void State::start(){
             }
         }
         
+        sem_init(&sem, 1, 1);
+        sem_init(&cinSem, 1, 1);
         board[State::boardWidth - 1][State::boardHeight - 1] = 1;
         winner = -1;
         isStarted = true;
-        counterPlays = 0;
+        playsCounter = 0;
     }
 }
 
 void State::update(std::vector<int> spot, int playerNumber){
     updateBoard(spot, playerNumber);
-    counterPlays++;
+    playsCounter++;
     winner = isBoardFlooded();
 
     if(winner != -1){
@@ -63,6 +65,8 @@ void State::update(std::vector<int> spot, int playerNumber){
 
 void State::resetState() {
     isStarted = false;
+    sem_destroy(&sem);
+    sem_destroy(&cinSem);
 }
 
 void State::render() {
