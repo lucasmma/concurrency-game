@@ -10,7 +10,8 @@ int main(int argc, char const **argv) {
     return 0;
   } else {
     int playerNumber = (int)(*argv[1] - '0');
-    if(playerNumber != 1 || playerNumber != 2) {
+    // std::cout << playerNumber << std::endl;
+    if(playerNumber != 1 && playerNumber != 2) {
       std::cout << "Os números de jogadores diponíveis são apenas o 1 e o 2" << std::endl;
       return 0;
     }
