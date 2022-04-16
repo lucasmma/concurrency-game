@@ -18,6 +18,7 @@ int main (int argc, char const **argv) {
       Game game = Game::getInstance();
       std::thread first(play, &game, false, 1);
       std::thread second(play, &game, true, 2);
+      
       first.join();
       second.join();
 

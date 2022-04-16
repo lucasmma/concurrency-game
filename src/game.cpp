@@ -22,6 +22,7 @@ Game::~Game(){
 }
 
 void Game::run(bool autoPlay, int playerNumber){
+  // std::cout << "AutoPlay -> " << autoPlay<< std::endl;
   state->start(!autoPlay);
   if(!autoPlay) {
     sem_wait(&(state->sem));
@@ -42,6 +43,7 @@ void Game::run(bool autoPlay, int playerNumber){
       sem_post(&(state->sem));
       return;
     }
+    sem_post(&(state->sem));
     std::vector<int> inputHandled;
     sem_wait(&(state->sem));
     if(!autoPlay){
@@ -50,25 +52,24 @@ void Game::run(bool autoPlay, int playerNumber){
       while(!state->isSpotAvailableOnBoard(inputHandled, playerNumber)){
         inputHandled = handleInput(true);
       }
-    } else if(state->playsCounter != 0){
-      std::cout << std::endl << "AutoPlay" << std::endl;
+    } else if(state->playsCounter % 2 + 1 == playerNumber){
+      // std::cout << std::endl << "esperando" << std::endl;
+      // std::this_thread::sleep_for(std::chrono::seconds(2));
+      // std::cout << std::endl << "esperado" << std::endl;
       inputHandled = state->autoPlay(playerNumber);
     }
-    sem_post(&(state->cinSem));
     sem_post(&(state->sem));
+    sem_post(&(state->cinSem));
     
     sem_wait(&(state->sem));
     state->update(inputHandled, playerNumber);
     sem_post(&(state->sem));
 
-    if(!autoPlay) {
-      sem_wait(&(state->sem));
-      state->render();
-      sem_post(&(state->sem));
-    }
-
     sem_wait(&(state->sem));
     if(state->isGameFinished()){
+      if(!autoPlay) {
+        state->render();
+      }
       sem_post(&(state->sem));
     }
     
