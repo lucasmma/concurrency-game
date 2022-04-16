@@ -33,10 +33,6 @@ void State::initState(){
 
 void State::start(){
     std::cout << "O jogo de inuncação começou" << std::endl << std::endl;
-    std::cout << "Jogo iniciado " << isStarted << std::endl;
-    std::cout << "IsFinished " << isFinished << std::endl;
-    std::cout << "winner " << winner << std::endl;
-    std::cout << "passou " << std::endl << std::endl;
     
     if(!isStarted){
       initState();
@@ -61,7 +57,7 @@ void State::resetState() {
 
 void State::render() {
     // std::cout << winner << std::endl;
-    // std::cout<< "render" << std::endl;
+    std::cout << std::endl;
     printBoard();
     // std::cout<< "mapa printado" << std::endl;
     

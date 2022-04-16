@@ -29,21 +29,17 @@ void Game::run(int playerNumber, bool exit){
   if ((idMemoryShared = shmget(key, sizeof(State), 0666 | IPC_CREAT | IPC_EXCL)) == -1){
     // memoria já está alocada
     idMemoryShared = shmget(key, sizeof(State), 0666 | IPC_CREAT);
-    char* blkAddr = (char* ) shmat(idMemoryShared, NULL, 0);
-    state = (State*) blkAddr;
-    std::cout << "entrou no if" << std::endl;
+    char* sharedMemory = (char* ) shmat(idMemoryShared, NULL, 0);
+    state = (State*) sharedMemory;
   } else {
     // memoria não alocada
-    std::cout << "entrou no else" << std::endl;
-    char* blkAddr = (char* ) shmat(idMemoryShared, NULL, 0);
-    state = new(blkAddr) State();
+    char* sharedMemory = (char* ) shmat(idMemoryShared, NULL, 0);
+    state = new(sharedMemory) State();
   }
   
   if(exit){
-    std::cout<< "sair" << std::endl;
     state->resetState();
     shmdt(state);
-    std::cout<< "dettach" << std::endl;
     return;
   }
   
@@ -55,34 +51,37 @@ void Game::run(int playerNumber, bool exit){
   while (!state->isGameFinished()) {
     sem_post(&(state->sem));
     std::cout << "Quantidade de plays " << state->playsCounter << std::endl;
+    // fazer o primeiro jogador que entrar jogar primeiro;
+    // if (state->playsCounter % 2 + 1 == this->player) {
     sem_wait(&(state->cinSem));
     sem_wait(&(state->sem));
-    if (state->playsCounter % 2 + 1 == this->player) {
-      state->render();
-      if(state->isGameFinished()){
-        sem_post(&(state->sem));
-        shmdt(state);
-        return;
-      }
+    state->render();
+    if(state->isGameFinished()){
       sem_post(&(state->sem));
-      std::cout << std::endl << "Vez do jogador "<< this->player << std::endl;
-      std::vector<int> inputHandled = handleInput();
-      while(!state->isSpotAvailableOnBoard(inputHandled, this->player)){
-        inputHandled = handleInput(true);
-      }
-      sem_post(&(state->cinSem));
-      
-      sem_wait(&(state->sem));
-      state->update(inputHandled, this->player);
-      sem_post(&(state->sem));
+      shmdt(state);
+      return;
     }
     sem_post(&(state->sem));
+    std::cout << std::endl << "Vez do jogador "<< this->player << std::endl;
+    std::vector<int> inputHandled = handleInput();
+    while(!state->isSpotAvailableOnBoard(inputHandled, this->player)){
+      inputHandled = handleInput(true);
+    }
+    sem_post(&(state->cinSem));
+    
+    sem_wait(&(state->sem));
+    state->update(inputHandled, this->player);
+    sem_post(&(state->sem));
+    // }
 
     sem_wait(&(state->sem));
     state->render();
     sem_post(&(state->sem));
 
     sem_wait(&(state->sem));
+    if(state->isGameFinished()){
+      sem_post(&(state->sem));
+    }
   }
   shmdt(state);
 }
