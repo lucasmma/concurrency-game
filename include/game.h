@@ -8,17 +8,17 @@
 #include <queue>
 #include <utility>
 #include <unistd.h>
-#include <sys/shm.h>
-#include <sys/stat.h>
+#include <thread>
 #include <cstdio>
 #include <cstring>
 #include <semaphore.h>
 #include "state.h"
+#include <time.h>
 
 class Game{
 public:
     ~Game();
-    void run(int playerNumber, bool exit = false);
+    void run(bool autoPlay, int playerNumber);
     static Game& getInstance();
     State& getState();
 private:

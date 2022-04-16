@@ -14,6 +14,8 @@ class State{
     void update(std::vector<int> spot, int playerNumber);
     void resetState();
     void render();
+    std::vector<int> autoPlay(int playerNumber);
+    std::vector<std::vector<int>> spotsAvailableForPlayer(int playerNumber);
     bool isGameFinished();
     void printBoard();
     bool isSpotAvailableOnBoard(std::vector<int> spot, int playerNumber);

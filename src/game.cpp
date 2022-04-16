@@ -3,6 +3,7 @@
 Game* Game::instance;
 
 Game::Game(){
+  state = new State();
 }
 
 Game& Game::getInstance(){
@@ -20,52 +21,30 @@ Game& Game::getInstance(){
 Game::~Game(){
 }
 
-
-void Game::run(int playerNumber, bool exit){
-  std::cout<< "começando o jogo" << std::endl;
-  player = playerNumber;
-  size_t idMemoryShared;
-  key_t key = ftok("/mnt/c/Users/lukit/Desktop/unb/sisop/concurrency-game/key.txt", 3);
-  if ((idMemoryShared = shmget(key, sizeof(State), 0666 | IPC_CREAT | IPC_EXCL)) == -1){
-    // memoria já está alocada
-    idMemoryShared = shmget(key, sizeof(State), 0666 | IPC_CREAT);
-    char* sharedMemory = (char* ) shmat(idMemoryShared, NULL, 0);
-    state = (State*) sharedMemory;
-  } else {
-    // memoria não alocada
-    char* sharedMemory = (char* ) shmat(idMemoryShared, NULL, 0);
-    state = new(sharedMemory) State();
-  }
-  
-  if(exit){
-    state->resetState();
-    shmdt(state);
-    return;
-  }
-  
+void Game::run(bool autoPlay, int playerNumber){
   state->start();
-  sem_wait(&(state->sem));
   state->render();
-  sem_post(&(state->sem));
   sem_wait(&(state->sem));
   while (!state->isGameFinished()) {
     sem_post(&(state->sem));
     std::cout << "Quantidade de plays " << state->playsCounter << std::endl;
-    // fazer o primeiro jogador que entrar jogar primeiro;
-    // if (state->playsCounter % 2 + 1 == this->player) {
     sem_wait(&(state->cinSem));
     sem_wait(&(state->sem));
     state->render();
     if(state->isGameFinished()){
       sem_post(&(state->sem));
-      shmdt(state);
       return;
     }
     sem_post(&(state->sem));
-    std::cout << std::endl << "Vez do jogador "<< this->player << std::endl;
-    std::vector<int> inputHandled = handleInput();
-    while(!state->isSpotAvailableOnBoard(inputHandled, this->player)){
-      inputHandled = handleInput(true);
+    std::vector<int> inputHandled;
+    if(!autoPlay){
+      std::cout << std::endl << "Vez do jogador "<< this->player << std::endl;
+      std::vector<int> inputHandled = handleInput();
+      while(!state->isSpotAvailableOnBoard(inputHandled, this->player)){
+        inputHandled = handleInput(true);
+      }
+    } else {
+      inputHandled = state->autoPlay(playerNumber);
     }
     sem_post(&(state->cinSem));
     
@@ -83,7 +62,6 @@ void Game::run(int playerNumber, bool exit){
       sem_post(&(state->sem));
     }
   }
-  shmdt(state);
 }
 
 std::vector<int> Game::handleInput(bool invalidPlay){

@@ -73,7 +73,25 @@ bool State::isGameFinished(){
     return isFinished;
 }
 
+std::vector<int> State::autoPlay(int playerNumber) {
+  std::vector<std::vector<int>> availableSpots = spotsAvailableForPlayer(playerNumber);
+  int randomIndex = rand() % availableSpots.size();
+  return availableSpots[randomIndex];
+}
 // Board functions
+
+std::vector<std::vector<int>> State::spotsAvailableForPlayer(int playerNumber){
+  std::vector<std::vector<int>> spotsAvailable;
+  for (int i = 0; i < State::boardWidth; i++){
+    for (int j = 0; j < State::boardHeight; j++){
+      if(isSpotAvailableOnBoard({i, j}, playerNumber)) {
+        spotsAvailable.push_back({i, j});
+      }
+    }
+  }
+  return spotsAvailable;
+}
+
 
 bool State::isSpotAvailableOnBoard(std::vector<int> spot, int playerNumber){
   // std::cout << (board[spot[0]][spot[1]] == 0) << " is available";
