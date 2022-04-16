@@ -22,8 +22,8 @@ Game::~Game(){
 }
 
 void Game::run(bool autoPlay, int playerNumber){
+  std::cout << "O jogo de inuncação começou" << std::endl;
   // std::cout << "AutoPlay -> " << autoPlay<< std::endl;
-  state->start(!autoPlay);
   if(!autoPlay) {
     sem_wait(&(state->sem));
     state->render();
@@ -33,6 +33,7 @@ void Game::run(bool autoPlay, int playerNumber){
   while (!state->isGameFinished()) {
     sem_post(&(state->sem));
     sem_wait(&(state->cinSem));
+    std::cout << std::endl << "Esperou o cin => " << playerNumber << std::endl << std::endl;
     if(!autoPlay) {
       sem_wait(&(state->sem));
       state->render();
@@ -53,7 +54,6 @@ void Game::run(bool autoPlay, int playerNumber){
         inputHandled = handleInput(true);
       }
     } else if(state->playsCounter % 2 + 1 == playerNumber){
-      // std::cout << std::endl << "esperando" << std::endl;
       // std::this_thread::sleep_for(std::chrono::seconds(2));
       // std::cout << std::endl << "esperado" << std::endl;
       inputHandled = state->autoPlay(playerNumber);
