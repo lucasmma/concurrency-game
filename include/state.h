@@ -9,6 +9,7 @@ class State{
   public:
     State();
     ~State();
+    void initState();
     void start();
     void update(std::vector<int> spot, int playerNumber);
     void resetState();

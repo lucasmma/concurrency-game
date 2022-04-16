@@ -5,25 +5,30 @@ int State::boardWidth = 8;
 int State::boardHeight = 8;
 
 State::State(){
-    isFinished = false;
-    winner = -1;
-    isStarted = true;
-        for (int i = 0; i < State::boardWidth; i++){
-        for (int j = 0; j < State::boardHeight; j++){
-        board[i][j] = 0;
-        if(i != 7) {
-            board[i][j] = 2;
-        }
-        }
-    }
-    
-    sem_init(&sem, 1, 1);
-    playsCounter = 0;
-    board[State::boardWidth - 1][State::boardHeight - 1] = 1;
+    initState();
 }
 
 State::~State(){
 
+}
+
+void State::initState(){
+  isFinished = false;
+  for (int i = 0; i < State::boardWidth; i++){
+    for (int j = 0; j < State::boardHeight; j++){
+      board[i][j] = 0;
+      if(i != 7) {
+          board[i][j] = 2;
+      }
+    }
+  }
+  
+  sem_init(&sem, 1, 1);
+  sem_init(&cinSem, 1, 1);
+  board[State::boardWidth - 1][State::boardHeight - 1] = 1;
+  winner = -1;
+  isStarted = true;
+  playsCounter = 0;
 }
 
 void State::start(){
@@ -34,22 +39,7 @@ void State::start(){
     std::cout << "passou " << std::endl << std::endl;
     
     if(!isStarted){
-        isFinished = false;
-        for (int i = 0; i < State::boardWidth; i++){
-            for (int j = 0; j < State::boardHeight; j++){
-            board[i][j] = 0;
-            if(i != 7) {
-                board[i][j] = 2;
-            }
-            }
-        }
-        
-        sem_init(&sem, 1, 1);
-        sem_init(&cinSem, 1, 1);
-        board[State::boardWidth - 1][State::boardHeight - 1] = 1;
-        winner = -1;
-        isStarted = true;
-        playsCounter = 0;
+      initState();
     }
 }
 

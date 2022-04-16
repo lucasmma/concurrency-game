@@ -55,8 +55,16 @@ void Game::run(int playerNumber, bool exit){
   while (!state->isGameFinished()) {
     sem_post(&(state->sem));
     std::cout << "Quantidade de plays " << state->playsCounter << std::endl;
+    sem_wait(&(state->cinSem));
+    sem_wait(&(state->sem));
     if (state->playsCounter % 2 + 1 == this->player) {
-      sem_wait(&(state->cinSem));
+      state->render();
+      if(state->isGameFinished()){
+        sem_post(&(state->sem));
+        shmdt(state);
+        return;
+      }
+      sem_post(&(state->sem));
       std::cout << std::endl << "Vez do jogador "<< this->player << std::endl;
       std::vector<int> inputHandled = handleInput();
       while(!state->isSpotAvailableOnBoard(inputHandled, this->player)){
@@ -64,9 +72,11 @@ void Game::run(int playerNumber, bool exit){
       }
       sem_post(&(state->cinSem));
       
+      sem_wait(&(state->sem));
       state->update(inputHandled, this->player);
       sem_post(&(state->sem));
     }
+    sem_post(&(state->sem));
 
     sem_wait(&(state->sem));
     state->render();
@@ -74,7 +84,7 @@ void Game::run(int playerNumber, bool exit){
 
     sem_wait(&(state->sem));
   }
-    shmdt(state);
+  shmdt(state);
 }
 
 std::vector<int> Game::handleInput(bool invalidPlay){
