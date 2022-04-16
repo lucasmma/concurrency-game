@@ -5,7 +5,6 @@ int State::boardWidth = 8;
 int State::boardHeight = 8;
 
 State::State(){
-    initState();
 }
 
 State::~State(){
@@ -31,12 +30,14 @@ void State::initState(){
   playsCounter = 0;
 }
 
-void State::start(){
+void State::start(bool print){
+  if(print) {
     std::cout << "O jogo de inuncação começou" << std::endl << std::endl;
-    
-    if(!isStarted){
-      initState();
-    }
+  }
+  
+  if(!isStarted){
+    initState();
+  }
 }
 
 void State::update(std::vector<int> spot, int playerNumber){

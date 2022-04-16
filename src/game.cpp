@@ -22,57 +22,56 @@ Game::~Game(){
 }
 
 void Game::run(bool autoPlay, int playerNumber){
-  std::cout << "Autoplay -> " << autoPlay << std::endl;
-  std::cout << "playerNumber -> " << playerNumber << std::endl;
-  state->start();
-  sem_wait(&(state->sem));
+  state->start(!autoPlay);
   if(!autoPlay) {
+    sem_wait(&(state->sem));
     state->render();
+    sem_post(&(state->sem));
   }
-  sem_post(&(state->sem));
   sem_wait(&(state->sem));
   while (!state->isGameFinished()) {
     sem_post(&(state->sem));
-    // std::cout << "Quantidade de plays " << state->playsCounter << std::endl;
     sem_wait(&(state->cinSem));
-    sem_wait(&(state->sem));
     if(!autoPlay) {
+      sem_wait(&(state->sem));
       state->render();
+      sem_post(&(state->sem));
     }
+    sem_wait(&(state->sem));
     if(state->isGameFinished()){
       sem_post(&(state->sem));
       return;
     }
-    sem_post(&(state->sem));
     std::vector<int> inputHandled;
+    sem_wait(&(state->sem));
     if(!autoPlay){
       std::cout << std::endl << "Vez do jogador "<< playerNumber << std::endl;
       inputHandled = handleInput();
       while(!state->isSpotAvailableOnBoard(inputHandled, playerNumber)){
         inputHandled = handleInput(true);
       }
-    } else {
-      std::cout << std::endl << std::endl << "AutoPlay" << std::endl << std::endl;
+    } else if(state->playsCounter != 0){
+      std::cout << std::endl << "AutoPlay" << std::endl;
       inputHandled = state->autoPlay(playerNumber);
     }
     sem_post(&(state->cinSem));
+    sem_post(&(state->sem));
     
     sem_wait(&(state->sem));
-    std::cout << inputHandled.size() << std::endl;
     state->update(inputHandled, playerNumber);
     sem_post(&(state->sem));
-    // }
 
-    sem_wait(&(state->sem));
     if(!autoPlay) {
+      sem_wait(&(state->sem));
       state->render();
+      sem_post(&(state->sem));
     }
-    sem_post(&(state->sem));
 
     sem_wait(&(state->sem));
     if(state->isGameFinished()){
       sem_post(&(state->sem));
     }
+    
   }
 }
 
