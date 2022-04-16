@@ -26,7 +26,6 @@ private:
     static Game* instance;
     State* state;
     std::vector<int> handleInput(bool invalidPlay = false);
-    int player;
 };
 
 #endif
